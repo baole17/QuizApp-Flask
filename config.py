@@ -12,4 +12,5 @@ PERMANENT_SESSION_LIFETIME = timedelta(minutes=30)
 
 # File upload settings
 UPLOAD_FOLDER = os.path.join('static', 'uploads', 'chat')
+UPLOAD_QUESTION_FOLDER = os.path.join('static', 'uploads',)
 MAX_CONTENT_LENGTH = 100 * 1024 * 1024  # 100MB max file size

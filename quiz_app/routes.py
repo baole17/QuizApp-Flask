@@ -253,7 +253,8 @@ def add_questions():
                     image = files[f'qi{i}']
                     if image and allowed_file(image.filename):
                         filename = secure_filename(image.filename)
-                        image.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+                        # Changed the upload folder from 'chat' to ''
+                        image.save(os.path.join(current_app.config['UPLOAD_QUESTION_FOLDER'], filename))
                         image_url = filename
 
                 # Create question based on type
@@ -2663,22 +2664,35 @@ def review_questions():
                 # Now delete the question
                 db.session.delete(question)
                 db.session.commit()
-            
+
             return jsonify({"success": True})
             
         except Exception as e:
             db.session.rollback()
             return jsonify({"error": str(e)}), 500
 
+    # Add GET method handling
+    questions = models.Question.query.filter_by(verified=False).all()
+    return render_template("admin/review_questions.html", questions=questions)
+
 @main.route("/admin/review-question/<int:question_id>")
 @login_required
 @admin_required
 def admin_review_question(question_id):
     question = models.Question.query.get_or_404(question_id)
+    
+    # Add image URL handling
+    if question.image_url:
+        # Construct the full URL for the image
+        image_url = url_for('static', filename=f'uploads/{question.image_url}')
+    else:
+        image_url = None
+        
     return render_template(
         "admin/review_question.html",
         question=question,
-        categories=models.Category.query.all()
+        categories=models.Category.query.all(),
+        image_url=image_url  # Pass the image URL to the template
     )
 
 @main.route("/admin/questions/bulk-review", methods=["POST"])

@@ -34,10 +34,9 @@
                 <h5>Question</h5>
                 <p class="lead">{{ question.question }}</p>
                 
-                {% if question.image_url %}
-                <div class="text-center mb-3">
-                    <img src="{{ url_for('static', filename=question.image_url) }}" 
-                         alt="Question Image" class="img-fluid">
+                {% if image_url %}
+                <div class="question-image mb-3">
+                    <img src="{{ image_url }}" alt="Question Image" class="img-fluid rounded">
                 </div>
                 {% endif %}
             </div>
