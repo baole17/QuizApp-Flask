@@ -68,7 +68,7 @@ class User(UserMixin, db.Model):
     @property
     def get_avatar_url(self):
         if not self.avatar_url:
-            return self.DEFAULT_AVATAR
+            return url_for('static', filename='images/default_avatar.png')
         return url_for('static', filename=f'uploads/avatars/{self.avatar_url}')
 
     @property

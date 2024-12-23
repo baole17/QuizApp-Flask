@@ -61,7 +61,6 @@ from .models import ChatRoom, ChatMessage
 from .models import QuestionSet
 from .models import User
 import logging
-import requests
 from quiz_app.models import ChatMessage, MessageReaction, User, RoomParticipants
 from pytz import timezone
 
@@ -202,7 +201,8 @@ def register():
         user = models.User(
             name=name,
             is_admin=False,
-            created_at=datetime.utcnow()
+            created_at=datetime.utcnow(),
+            avatar_url='default_avatar.png'  # Add this line
         )
         user.set_password(data["password"])
         db.session.add(user)
@@ -1440,25 +1440,18 @@ def edit_profile():
                 file = request.files['avatar']
                 if file and file.filename and allowed_file(file.filename, {'png', 'jpg', 'jpeg', 'gif'}):
                     # Create avatars directory if it doesn't exist
-                    avatar_dir = os.path.join(current_app.config['UPLOAD_FOLDER'], 'avatars')
+                    avatar_dir = os.path.join(current_app.root_path, 'static', 'uploads', 'avatars')
                     if not os.path.exists(avatar_dir):
                         os.makedirs(avatar_dir)
                         
                     # Generate unique filename
                     filename = secure_filename(f"avatar_{current_user.id}_{int(time.time())}{os.path.splitext(file.filename)[1]}")
                     
-                    # Delete old avatar if it exists and isn't the default
-                    if current_user.avatar_url:
-                        old_avatar_path = os.path.join(avatar_dir, current_user.avatar_url)
-                        if os.path.exists(old_avatar_path) and current_user.avatar_url != 'default_avatar.png':
-                            try:
-                                os.remove(old_avatar_path)
-                            except OSError:
-                                pass  # Ignore deletion errors
-                            
                     # Save new avatar
                     file_path = os.path.join(avatar_dir, filename)
                     file.save(file_path)
+                    
+                    # Update user's avatar_url to just the filename
                     current_user.avatar_url = filename
 
             # Update other profile fields
