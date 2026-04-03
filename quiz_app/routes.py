@@ -169,8 +169,11 @@ def login():
             name=data["name"],
             is_admin=True if "is_admin" in data.keys() else False
         ).first()
+        
+        print("Password Print: ", {data["password"]})
         if user is not None and user.verify_password(data["password"]):
             login_user(user)
+            
             flash("logged in successfully", "success")
             return redirect(url_for("main.index"))
         else:

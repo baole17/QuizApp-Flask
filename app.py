@@ -5,6 +5,8 @@ from quiz_app.extentions import db
 
 app = create_app()
 migrate = Migrate(app, db)
+app.config['DEBUG'] = True
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 @login_manager.user_loader
 def load_user(user_id):

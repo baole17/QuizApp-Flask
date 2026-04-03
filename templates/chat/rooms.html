@@ -306,7 +306,8 @@ function createRoom() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            window.location.href = `/chat/room/${data.room_id}`;
+            console.log("redirect to /chats/")
+            window.location.href = `/chat/${data.room_id}`;
         } else {
             alert(data.error || 'Failed to create room');
         }
